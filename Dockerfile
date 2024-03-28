@@ -1,17 +1,12 @@
 FROM wordpress:latest
 
-COPY plugins/faustwp.zip /var/www/html/wp-content/plugins/faustwp.zip
-COPY plugins/wp-graphql.1.22.0.zip /var/www/html/wp-content/plugins/wp-graphql.1.22.0.zip
-COPY plugins/polylang.3.6.zip /var/www/html/wp-content/plugins/polylang.3.6.zip
+RUN apt-get update && apt-get install -y unzip
 
-RUN unzip /var/www/html/wp-content/plugins/faustwp.zip -d /var/www/html/wp-content/plugins/
-RUN unzip /var/www/html/wp-content/plugins/wp-graphql.1.22.0.zip -d /var/www/html/wp-content/plugins/
-RUN unzip /var/www/html/wp-content/plugins/polylang.3.6.zip -d /var/www/html/wp-content/plugins/
+COPY plugins/faustwp.zip plugins/wp-graphql.1.22.0.zip plugins/polylang.3.6.zip /tmp/
 
-RUN chown -R www-data:www-data /var/www/html/wp-content/plugins/
+RUN unzip /tmp/faustwp.zip -d /var/www/html/wp-content/plugins/ && \
+    unzip /tmp/wp-graphql.1.22.0.zip -d /var/www/html/wp-content/plugins/ && \
+    unzip /tmp/polylang.3.6.zip -d /var/www/html/wp-content/plugins/ && \
+    chown -R www-data:www-data /var/www/html/wp-content/plugins/ && \
+    rm /tmp/faustwp.zip /tmp/wp-graphql.1.22.0.zip /tmp/polylang.3.6.zip
 
-RUN rm /var/www/html/wp-content/plugins/faustwp.zip
-RUN rm /var/www/html/wp-content/plugins/wp-graphql.1.22.0.zip
-RUN rm /var/www/html/wp-content/plugins/polylang.3.6.zip
-
-RUN ["npm", "run", "dev"]
